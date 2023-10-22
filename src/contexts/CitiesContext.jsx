@@ -1,9 +1,10 @@
 import { useReducer } from "react";
 import { useCallback } from "react";
 import { useContext } from "react";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect } from "react";
 
-const BASE_URL = "http://localhost:8000";
+// const BASE_URL = "http://localhost:8000";
+const BASE_URL = "https://worldwiseapi.onrender.com";
 
 const CitiesContext = createContext();
 
@@ -81,25 +82,27 @@ function CitiesProvider({ children }) {
     fetchCities();
   }, []);
 
-  const getCity = useCallback( async function getCity(id) {
-    
-    if (Number(id) === currentCity.id) return;
+  const getCity = useCallback(
+    async function getCity(id) {
+      if (Number(id) === currentCity.id) return;
 
-    dispatch({ type: "loading" });
+      dispatch({ type: "loading" });
 
-    try {
-      const res = await fetch(`${BASE_URL}/cities/${id}`);
+      try {
+        const res = await fetch(`${BASE_URL}/cities/${id}`);
 
-      const data = await res.json();
+        const data = await res.json();
 
-      dispatch({ type: "city/loaded", payload: data });
-    } catch {
-      dispatch({
-        type: "rejected",
-        payload: "There was an error loading the city...",
-      });
-    }
-  },[currentCity.id])
+        dispatch({ type: "city/loaded", payload: data });
+      } catch {
+        dispatch({
+          type: "rejected",
+          payload: "There was an error loading the city...",
+        });
+      }
+    },
+    [currentCity.id]
+  );
 
   async function createCity(newCity) {
     dispatch({ type: "loading" });
